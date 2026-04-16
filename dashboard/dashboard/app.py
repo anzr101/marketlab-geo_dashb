@@ -236,11 +236,7 @@ with cols[1]:
         st.query_params.clear()
         st.query_params["page"] = "discovery"
         st.rerun()
-with cols[2]:
-    if st.button("📊 Evidence", use_container_width=True):
-        st.query_params.clear()
-        st.query_params["page"] = "evidence"
-        st.rerun()
+
 with cols[3]:
     if st.button("💡 Solution", use_container_width=True):
         st.query_params.clear()
@@ -436,69 +432,7 @@ elif page == "discovery":
     </div>
     """, unsafe_allow_html=True)
 
-# ============================================================================
-# EVIDENCE PAGE
-# ============================================================================
 
-elif page == "evidence":
-    st.markdown('<div class="section-title">📊 The Evidence</div>', unsafe_allow_html=True)
-    
-    if metrics:
-        st.markdown('<div class="section-title">Model Performance</div>', unsafe_allow_html=True)
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("""
-            <div class="timeline-item">
-                <div class="timeline-title">Classical Machine Learning</div>
-                <div class="timeline-desc">
-                    • Models: 1,326 total<br>
-                    • Algorithms: 25 (RF, XGBoost, LightGBM, etc.)<br>
-                    • Best R²: 0.9986<br>
-                    • Average R²: -2.79 (many overfitted)
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown("""
-            <div class="timeline-item">
-                <div class="timeline-title">Deep Learning</div>
-                <div class="timeline-desc">
-                    • Models: 60 total<br>
-                    • Architectures: LSTM, GRU, Transformer, etc.<br>
-                    • Best R²: 0.9104<br>
-                    • Sequence length: 60 days
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        st.markdown('<div class="section-title">Feature Analysis (SHAP)</div>', unsafe_allow_html=True)
-        
-        st.markdown("""
-        <div class="insight-box">
-            <div class="insight-title">Universal Features Discovered</div>
-            <div class="insight-text">
-                Out of 325 engineered features, only 37 showed consistent importance across all stocks:
-                <br><br>
-                <strong>Top 3 Features:</strong><br>
-                1. EMA_3 (3-day exponential moving average)<br>
-                2. SMA_3 (3-day simple moving average)<br>
-                3. VWAP_5 (5-day volume weighted average price)
-                <br><br>
-                <strong>Insight:</strong> Stock prices depend heavily on very recent history (2-5 days), 
-                confirming market efficiency hypothesis.
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # Architecture Image
-    try:
-        st.markdown('<div class="section-title">System Architecture</div>', unsafe_allow_html=True)
-        st.image('assets/architecture.png', use_container_width=True)
-    except:
-        pass
 
 # ============================================================================
 # SOLUTION PAGE
