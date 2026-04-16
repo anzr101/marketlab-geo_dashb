@@ -1,0 +1,11 @@
+date,event,category,impact,affected_stocks,market_reaction
+2022-02-24,"Russia invades Ukraine, global oil shock",geopolitical,10,['all'],sharp decline
+2022-03-16,"Fed raises rates 0.25%, first hike since 2018",economic_policy,8,"['banking', 'all']",volatile
+2022-06-15,"Fed raises rates 0.75%, largest hike since 1994",economic_policy,9,"['banking', 'real_estate', 'all']",decline
+2022-09-21,"Fed raises rates another 0.75%, inflation fight continues",economic_policy,8,"['banking', 'all']",decline
+2023-03-10,"Silicon Valley Bank collapses, banking crisis fears",corporate,9,"['banking', 'tech']",panic selling
+2023-05-03,"Fed raises rates to 5.0-5.25%, highest since 2007",economic_policy,7,"['banking', 'all']",mixed
+2023-11-14,"US inflation cools to 3.2%, rate hike pause expected",economic_policy,7,['all'],rally
+2024-01-31,"Fed holds rates steady, signals potential cuts",economic_policy,6,['all'],rally
+2024-07-31,India budget 2024: Tax changes announced,regulatory,5,['all'],volatile
+2024-09-18,"Fed cuts rates 0.50%, first cut since 2020",economic_policy,8,['all'],rally

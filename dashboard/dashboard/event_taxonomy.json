@@ -1,0 +1,128 @@
+{
+  "geopolitical": {
+    "description": "Wars, conflicts, international tensions, trade disputes",
+    "keywords": [
+      "war",
+      "conflict",
+      "sanctions",
+      "trade war",
+      "tension",
+      "military",
+      "invasion",
+      "attack",
+      "crisis",
+      "dispute"
+    ],
+    "typical_impact": "high",
+    "affected_sectors": [
+      "defense",
+      "oil",
+      "commodities",
+      "safe_haven"
+    ],
+    "volatility_increase": "high"
+  },
+  "economic_policy": {
+    "description": "Central bank decisions, fiscal policy, interest rates",
+    "keywords": [
+      "interest rate",
+      "fed",
+      "rbi",
+      "monetary policy",
+      "inflation",
+      "rate hike",
+      "rate cut",
+      "quantitative easing",
+      "budget",
+      "gdp"
+    ],
+    "typical_impact": "high",
+    "affected_sectors": [
+      "banking",
+      "real_estate",
+      "all"
+    ],
+    "volatility_increase": "medium"
+  },
+  "regulatory": {
+    "description": "New regulations, policy changes, government actions",
+    "keywords": [
+      "regulation",
+      "law",
+      "ban",
+      "restriction",
+      "policy",
+      "government",
+      "tax",
+      "subsidy",
+      "approval",
+      "compliance"
+    ],
+    "typical_impact": "medium",
+    "affected_sectors": [
+      "sector_specific"
+    ],
+    "volatility_increase": "medium"
+  },
+  "corporate": {
+    "description": "Earnings, mergers, acquisitions, scandals",
+    "keywords": [
+      "earnings",
+      "merger",
+      "acquisition",
+      "ceo",
+      "bankruptcy",
+      "scandal",
+      "lawsuit",
+      "dividend",
+      "buyback",
+      "restructuring"
+    ],
+    "typical_impact": "medium",
+    "affected_sectors": [
+      "company_specific"
+    ],
+    "volatility_increase": "low"
+  },
+  "natural_disaster": {
+    "description": "Earthquakes, floods, pandemics, climate events",
+    "keywords": [
+      "earthquake",
+      "flood",
+      "pandemic",
+      "covid",
+      "hurricane",
+      "drought",
+      "climate",
+      "disaster",
+      "outbreak",
+      "emergency"
+    ],
+    "typical_impact": "medium",
+    "affected_sectors": [
+      "insurance",
+      "infrastructure",
+      "healthcare"
+    ],
+    "volatility_increase": "high"
+  },
+  "technological": {
+    "description": "Breakthroughs, disruptions, cyber events",
+    "keywords": [
+      "ai",
+      "technology",
+      "innovation",
+      "cyber attack",
+      "data breach",
+      "disruption",
+      "automation",
+      "breakthrough"
+    ],
+    "typical_impact": "low",
+    "affected_sectors": [
+      "tech",
+      "innovation"
+    ],
+    "volatility_increase": "low"
+  }
+}
