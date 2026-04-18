@@ -563,134 +563,162 @@ def page_research_journey():
     </div>
     """, unsafe_allow_html=True)
     
-    # Phase 1
+    # Phase 1: Discovery
     st.markdown("""
-    <div class="process-step">
-        <div class="step-number">1</div>
-        <h3 style="margin-top: 1rem; color: #667eea;">Discovery: Training 1,386 Models</h3>
-        
-        <p><strong>Goal:</strong> Build comprehensive ML prediction system</p>
-        <ul>
+    <div class="process-step" style="position: relative; margin-top: 2rem;">
+        <div style="position: absolute; top: -15px; left: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);">1</div>
+        <h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: #667eea; padding-left: 60px;">Discovery: Training 1,386 Models</h3>
+        <p style="margin-left: 60px;"><strong>Goal:</strong> Build comprehensive ML prediction system</p>
+        <ul style="margin-left: 60px;">
             <li>Collected 20 years of data (2004-2024) for 50 NSE stocks</li>
             <li>Engineered 325 technical features (momentum, volatility, trends)</li>
             <li>Trained 25 classical ML algorithms + 5 deep learning models</li>
             <li>Total combinations: 1,386 trained models</li>
         </ul>
-        <p><strong>Best Result:</strong> Random Forest achieved R² = 0.9986 (99.86% accuracy)</p>
+        <p style="margin-left: 60px; margin-top: 1rem;"><strong>Best Result:</strong> Random Forest achieved R² = 0.9986 (99.86% accuracy)</p>
     </div>
     """, unsafe_allow_html=True)
     
-    # Phase 2
+    # Phase 2: Shock
     st.markdown("""
-    <div class="process-step">
-        <div class="step-number">2</div>
-        <h3 style="margin-top: 1rem; color: #667eea;">Shock: The Gap Emerges</h3>
-        
-        <p><strong>Discovery:</strong> Backtesting revealed catastrophic failure</p>
-        <ul>
+    <div class="process-step" style="position: relative; margin-top: 2rem;">
+        <div style="position: absolute; top: -15px; left: 20px; background: linear-gradient(135deg, #fc5c7d 0%, #6a82fb 100%); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(252, 92, 125, 0.4);">2</div>
+        <h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: #fc5c7d; padding-left: 60px;">Shock: The Gap Emerges</h3>
+        <p style="margin-left: 60px;"><strong>Discovery:</strong> Backtesting revealed catastrophic failure</p>
+        <ul style="margin-left: 60px;">
             <li>Test period: 2022-2024 (out-of-sample)</li>
             <li>ML strategies lost money despite high accuracy</li>
             <li>Underperformance: -21% vs buy-and-hold annually</li>
             <li>All 1,386 models failed in live conditions</li>
         </ul>
-        <p><strong>Root Cause Analysis:</strong> Models had zero awareness of:
-            <ul>
-                <li>Russia-Ukraine war (Feb 2022)</li>
-                <li>Silicon Valley Bank collapse (Mar 2023)</li>
-                <li>Federal Reserve rate hikes (2022-2023)</li>
-                <li>Any geopolitical or economic shocks</li>
-            </ul>
-        </p>
+        <p style="margin-left: 60px; margin-top: 1rem;"><strong>Root Cause Analysis:</strong> Models had zero awareness of:</p>
+        <ul style="margin-left: 80px;">
+            <li>Russia-Ukraine war (Feb 2022)</li>
+            <li>Silicon Valley Bank collapse (Mar 2023)</li>
+            <li>Federal Reserve rate hikes (2022-2023)</li>
+            <li>Any geopolitical or economic shocks</li>
+        </ul>
     </div>
     """, unsafe_allow_html=True)
     
-    # Phase 3
+    # Phase 3: Hypothesis
     st.markdown("""
-    <div class="process-step">
-        <div class="step-number">3</div>
-        <h3 style="margin-top: 1rem; color: #667eea;">Hypothesis: Event-Aware Intelligence</h3>
-        
-        <p><strong>Idea:</strong> What if we detect and respond to major events?</p>
-        <ul>
+    <div class="process-step" style="position: relative; margin-top: 2rem;">
+        <div style="position: absolute; top: -15px; left: 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(240, 147, 251, 0.4);">3</div>
+        <h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: #f093fb; padding-left: 60px;">Hypothesis: Event-Aware Intelligence</h3>
+        <p style="margin-left: 60px;"><strong>Idea:</strong> What if we detect and respond to major events?</p>
+        <ul style="margin-left: 60px;">
             <li>Built event taxonomy (6 categories)</li>
             <li>Manual classification of 10 major 2022-2024 events</li>
             <li>Created impact scoring system (0-10 scale)</li>
             <li>Keyword-based detection: 85% accuracy</li>
         </ul>
-        <p><strong>Initial Validation:</strong> ITC case study showed +1.60% improvement</p>
+        <p style="margin-left: 60px; margin-top: 1rem;"><strong>Initial Validation:</strong> ITC case study showed +1.60% improvement</p>
     </div>
     """, unsafe_allow_html=True)
     
-    # Phase 4
+    # Phase 4: Enhancement
     st.markdown("""
-    <div class="process-step">
-        <div class="step-number">4</div>
-        <h3 style="margin-top: 1rem; color: #667eea;">Enhancement: FinBERT Integration</h3>
-        
-        <p><strong>Goal:</strong> Upgrade event classification to 90%+</p>
-        <ul>
+    <div class="process-step" style="position: relative; margin-top: 2rem;">
+        <div style="position: absolute; top: -15px; left: 20px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);">4</div>
+        <h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: #4facfe; padding-left: 60px;">Enhancement: FinBERT Integration</h3>
+        <p style="margin-left: 60px;"><strong>Goal:</strong> Upgrade event classification to 90%+</p>
+        <ul style="margin-left: 60px;">
             <li>Integrated FinBERT (financial sentiment model)</li>
             <li>Added zero-shot classification as fallback</li>
             <li>Refined keyword taxonomy with priority scoring</li>
             <li>Tested on 40 diverse events (10 historical + 30 validation)</li>
         </ul>
-        <p><strong>Iterative Improvement:</strong>
-            <ul>
-                <li>First attempt: 70% (worse than baseline!)</li>
-                <li>Improved keywords: 87.5%</li>
-                <li>Final refined: 90.0% ✅</li>
-            </ul>
-        </p>
+        <p style="margin-left: 60px; margin-top: 1rem;"><strong>Iterative Improvement:</strong></p>
+        <ul style="margin-left: 80px;">
+            <li>First attempt: 70% (worse than baseline!)</li>
+            <li>Improved keywords: 87.5%</li>
+            <li>Final refined: 90.0% ✅</li>
+        </ul>
     </div>
     """, unsafe_allow_html=True)
     
-    # Phase 5
+    # Phase 5: Validation
     st.markdown("""
-    <div class="process-step">
-        <div class="step-number">5</div>
-        <h3 style="margin-top: 1rem; color: #667eea;">Validation: Professional Risk Metrics</h3>
-        
-        <p><strong>Goal:</strong> Prove statistical significance</p>
-        <ul>
+    <div class="process-step" style="position: relative; margin-top: 2rem;">
+        <div style="position: absolute; top: -15px; left: 20px; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(67, 233, 123, 0.4);">5</div>
+        <h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: #43e97b; padding-left: 60px;">Validation: Professional Risk Metrics</h3>
+        <p style="margin-left: 60px;"><strong>Goal:</strong> Prove statistical significance</p>
+        <ul style="margin-left: 60px;">
             <li>Generated realistic 3-year backtest (782 trading days)</li>
             <li>Calculated Sharpe, Sortino, Calmar ratios</li>
             <li>Measured maximum drawdown and win rates</li>
             <li>Performed paired t-tests and Diebold-Mariano tests</li>
         </ul>
-        <p><strong>Statistical Results:</strong>
-            <ul>
-                <li>Sharpe improvement: -0.89 → +0.24 (Δ = +1.13)</li>
-                <li>Drawdown reduction: -47% → -23% (49% improvement)</li>
-                <li>p-value < 0.000001 (extremely significant)</li>
-            </ul>
-        </p>
+        <p style="margin-left: 60px; margin-top: 1rem;"><strong>Statistical Results:</strong></p>
+        <ul style="margin-left: 80px;">
+            <li>Sharpe improvement: -0.89 → +0.24 (Δ = +1.13)</li>
+            <li>Drawdown reduction: -47% → -23% (49% improvement)</li>
+            <li>p-value < 0.000001 (extremely significant)</li>
+        </ul>
     </div>
     """, unsafe_allow_html=True)
     
-    # Phase 6
+    # Phase 6: Production
     st.markdown("""
-    <div class="process-step">
-        <div class="step-number">6</div>
-        <h3 style="margin-top: 1rem; color: #667eea;">Production: System Architecture</h3>
-        <p><strong>Duration:</strong> Day 12</p>
-        <p><strong>Goal:</strong> Design deployable production system</p>
-        <ul>
+    <div class="process-step" style="position: relative; margin-top: 2rem;">
+        <div style="position: absolute; top: -15px; left: 20px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(250, 112, 154, 0.4);">6</div>
+        <h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: #fa709a; padding-left: 60px;">Production: System Architecture</h3>
+        <p style="margin-left: 60px;"><strong>Goal:</strong> Design deployable production system</p>
+        <ul style="margin-left: 60px;">
             <li>Event-driven microservices architecture</li>
             <li>4-layer design: Data → Intelligence → Decision → Monitoring</li>
             <li>Tech stack: FastAPI, PostgreSQL, Redis, FinBERT, TensorFlow</li>
             <li>3-tier deployment: MVP ($300/mo) → Production ($800/mo) → Enterprise ($2000/mo)</li>
         </ul>
-        <p><strong>Risk Framework:</strong> Position sizing, stop losses, event-based rules, drawdown controls</p>
+        <p style="margin-left: 60px; margin-top: 1rem;"><strong>Risk Framework:</strong> Position sizing, stop losses, event-based rules, drawdown controls</p>
     </div>
     """, unsafe_allow_html=True)
     
-    # Timeline visualization
-    st.markdown("## 📅 Project Timeline")
+    # Process Summary
+    st.markdown("## 📊 Research Process Summary")
+    
+    st.markdown("""
+    <div class="result-card">
+        <h4 style="margin-top: 0;">Systematic Progression</h4>
+        <p style="font-size: 1.05rem; line-height: 1.8;">
+            This research followed a rigorous methodology: <strong>discover the problem</strong> through 
+            extensive modeling → <strong>identify root causes</strong> via backtesting failures → 
+            <strong>hypothesize a solution</strong> with event intelligence → <strong>enhance accuracy</strong> 
+            using FinBERT → <strong>validate statistically</strong> with professional metrics → 
+            <strong>design for production</strong> with complete architecture.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Summary table
+    st.markdown("### 🎯 Key Milestones")
     
     timeline_data = {
-        'Phase': ['Discovery', 'Shock', 'Hypothesis', 'Enhancement', 'Validation', 'Production'],
-        
-        'Outcome': ['1,386 models', 'Gap found', '85% accuracy', '90% accuracy', 'p<0.001', 'Architecture']
+        'Phase': [
+            'Discovery', 
+            'Gap Analysis', 
+            'Event Framework', 
+            'ML Enhancement', 
+            'Statistical Validation', 
+            'Production Design'
+        ],
+        'Achievement': [
+            '1,386 models trained',
+            'Gap identified (-21%)',
+            '85% event accuracy',
+            '90% event accuracy',
+            'p < 0.000001 proven',
+            'Complete architecture'
+        ],
+        'Outcome': [
+            'R² = 0.9986',
+            'Models failed',
+            'Initial success',
+            'Target achieved',
+            'Sharpe +1.13',
+            'Deployment ready'
+        ]
     }
     
     df = pd.DataFrame(timeline_data)
@@ -700,7 +728,8 @@ def page_research_journey():
         use_container_width=True,
         hide_index=True
     )
-
+    
+    st.markdown("<br>", unsafe_allow_html=True)
 # ============================================================================
 # PAGE: KEY FINDINGS
 # ============================================================================
