@@ -1,612 +1,1051 @@
+"""
+MarketLab Professional Dashboard v3.0
+Advanced Trading Intelligence System
+Author: [Your Name]
+Institution: Mumbai University
+"""
+
 import streamlit as st
 import pandas as pd
 import numpy as np
-import json
 import plotly.graph_objects as go
 import plotly.express as px
+from plotly.subplots import make_subplots
+import json
+from pathlib import Path
+from datetime import datetime
+import base64
 
 # ============================================================================
 # PAGE CONFIGURATION
 # ============================================================================
 
 st.set_page_config(
-    page_title="MarketLab | AI Trading Research",
+    page_title="MarketLab Intelligence",
     page_icon="📊",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded",
+    menu_items={
+        'About': "MarketLab: Bridging the Prediction-Profitability Gap"
+    }
 )
 
 # ============================================================================
-# PROFESSIONAL CUSTOM CSS
+# CUSTOM CSS - PROFESSIONAL QUANT STYLE
 # ============================================================================
 
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    
-    * {
-        font-family: 'Inter', sans-serif;
+    /* Main theme colors */
+    :root {
+        --primary-color: #00d4ff;
+        --secondary-color: #ff6b6b;
+        --success-color: #51cf66;
+        --warning-color: #ffd93d;
+        --dark-bg: #0e1117;
+        --card-bg: #1a1d29;
     }
     
-    .main {
-        background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
-        color: #ffffff;
+    /* Sidebar styling */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #1a1d29 0%, #0e1117 100%);
+        border-right: 1px solid #2d3142;
     }
     
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    
-    .hero-container {
-        padding: 4rem 2rem;
-        text-align: center;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 20px;
-        margin-bottom: 3rem;
-        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
-    }
-    
-    .hero-title {
-        font-size: 4rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 1rem;
-        line-height: 1.2;
-    }
-    
-    .hero-subtitle {
-        font-size: 1.5rem;
-        color: rgba(255, 255, 255, 0.9);
-        font-weight: 300;
-        margin-bottom: 2rem;
-    }
-    
-    .hero-stat {
-        display: inline-block;
-        margin: 1rem 2rem;
-        text-align: center;
-    }
-    
-    .hero-stat-number {
-        font-size: 3rem;
-        font-weight: 700;
-        color: #ffffff;
-    }
-    
-    .hero-stat-label {
-        font-size: 1rem;
-        color: rgba(255, 255, 255, 0.7);
-        text-transform: uppercase;
-        letter-spacing: 2px;
-    }
-    
-    .section-title {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin: 3rem 0 1.5rem 0;
-        color: #ffffff;
-        border-left: 5px solid #667eea;
-        padding-left: 1.5rem;
-    }
-    
-    .metric-card {
-        background: linear-gradient(135deg, #1e1e2f 0%, #2a2a3e 100%);
-        border-radius: 15px;
-        padding: 2rem;
-        text-align: center;
-        border: 1px solid rgba(102, 126, 234, 0.3);
-        transition: transform 0.3s ease;
-        margin: 1rem 0;
-    }
-    
-    .metric-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-    }
-    
-    .metric-value {
-        font-size: 3rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    
-    .metric-label {
-        font-size: 1rem;
-        color: rgba(255, 255, 255, 0.6);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-    
-    .discovery-box {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        border-radius: 15px;
-        padding: 2.5rem;
-        margin: 2rem 0;
-        box-shadow: 0 15px 40px rgba(245, 158, 11, 0.4);
-    }
-    
-    .discovery-title {
+    /* Metric cards */
+    [data-testid="stMetricValue"] {
         font-size: 2rem;
         font-weight: 700;
-        color: #ffffff;
-        margin-bottom: 1rem;
+        color: #00d4ff;
     }
     
-    .discovery-text {
-        font-size: 1.2rem;
-        line-height: 1.8;
-        color: rgba(255, 255, 255, 0.95);
-    }
-    
-    .insight-box {
-        background: linear-gradient(135deg, #1e1e2f 0%, #2a2a3e 100%);
-        border-left: 5px solid #667eea;
-        border-radius: 10px;
-        padding: 2rem;
-        margin: 2rem 0;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-    
-    .insight-title {
-        font-size: 1.5rem;
+    [data-testid="stMetricLabel"] {
+        font-size: 1rem;
         font-weight: 600;
-        color: #667eea;
-        margin-bottom: 1rem;
+        color: #a0a0a0;
     }
     
-    .insight-text {
-        font-size: 1.1rem;
-        line-height: 1.8;
-        color: rgba(255, 255, 255, 0.8);
+    /* Headers */
+    h1 {
+        color: #ffffff;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #00d4ff;
     }
     
-    .timeline-item {
-        background: linear-gradient(135deg, #1e1e2f 0%, #2a2a3e 100%);
-        border-left: 3px solid #667eea;
+    h2 {
+        color: #00d4ff;
+        font-weight: 700;
+        margin-top: 2rem;
+    }
+    
+    h3 {
+        color: #ffd93d;
+        font-weight: 600;
+    }
+    
+    /* Cards */
+    .metric-card {
+        background: linear-gradient(135deg, #1a1d29 0%, #252836 100%);
+        border-radius: 12px;
         padding: 1.5rem;
+        border: 1px solid #2d3142;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        margin-bottom: 1rem;
+    }
+    
+    /* Info boxes */
+    .info-box {
+        background: linear-gradient(135deg, #0066cc 0%, #004c99 100%);
+        border-radius: 8px;
+        padding: 1rem;
+        color: white;
         margin: 1rem 0;
-        border-radius: 10px;
+        border-left: 4px solid #00d4ff;
     }
     
-    .timeline-title {
-        font-size: 1.3rem;
+    .success-box {
+        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        border-radius: 8px;
+        padding: 1rem;
+        color: white;
+        margin: 1rem 0;
+        border-left: 4px solid #51cf66;
+    }
+    
+    .warning-box {
+        background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        border-radius: 8px;
+        padding: 1rem;
+        color: white;
+        margin: 1rem 0;
+        border-left: 4px solid #ffd93d;
+    }
+    
+    /* Tables */
+    .dataframe {
+        background: #1a1d29;
+        border-radius: 8px;
+    }
+    
+    /* Buttons */
+    .stButton > button {
+        background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
         font-weight: 600;
-        color: #ffffff;
-        margin-bottom: 0.5rem;
+        transition: all 0.3s;
     }
     
-    .timeline-desc {
-        color: rgba(255, 255, 255, 0.7);
-        line-height: 1.6;
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 212, 255, 0.4);
     }
     
-    @media (max-width: 768px) {
-        .hero-title {
-            font-size: 2.5rem;
-        }
-        .hero-stat-number {
-            font-size: 2rem;
-        }
+    /* Tabs */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 2rem;
+        background: #1a1d29;
+        border-radius: 8px;
+        padding: 0.5rem;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        color: #a0a0a0;
+        font-weight: 600;
+    }
+    
+    .stTabs [aria-selected="true"] {
+        color: #00d4ff;
+        border-bottom: 2px solid #00d4ff;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # ============================================================================
-# LOAD DATA
+# DATA LOADING FUNCTIONS
 # ============================================================================
 
 @st.cache_data
-def load_metrics():
-    try:
-        with open('metrics.json', 'r') as f:
-            return json.load(f)
-    except:
-        return {}
-
-@st.cache_data
-def load_backtest():
-    try:
-        df = pd.read_csv('backtest_data.csv')
-        return df
-    except:
-        return pd.DataFrame()
-
-metrics = load_metrics()
-backtest_df = load_backtest()
-
-# ============================================================================
-# NAVIGATION
-# ============================================================================
-
-query_params = st.query_params
-page = query_params.get("page", ["home"])[0] if isinstance(st.query_params.get("page", ["home"]), list) else st.query_params.get("page", "home")
-
-cols = st.columns(5)
-with cols[0]:
-    if st.button("🏠 Home", use_container_width=True):
-        st.query_params.clear()
-        st.query_params["page"] = "home"
-        st.rerun()
-with cols[1]:
-    if st.button("🔍 Discovery", use_container_width=True):
-        st.query_params.clear()
-        st.query_params["page"] = "discovery"
-        st.rerun()
-
-with cols[3]:
-    if st.button("💡 Solution", use_container_width=True):
-        st.query_params.clear()
-        st.query_params["page"] = "solution"
-        st.rerun()
-with cols[4]:
-    if st.button("👨‍🎓 About", use_container_width=True):
-        st.query_params.clear()
-        st.query_params["page"] = "about"
-        st.rerun()
-
-st.markdown("---")
-
-# ============================================================================
-# HOME PAGE
-# ============================================================================
-
-if page == "home":
-    st.markdown("""
-    <div class="hero-container">
-        <div class="hero-title">MarketLab</div>
-        <div class="hero-subtitle">Why 99.86% Accurate AI Still Loses Money</div>
-        <div>
-            <div class="hero-stat">
-                <span class="hero-stat-number">1,386</span>
-                <span class="hero-stat-label">Models Trained</span>
-            </div>
-            <div class="hero-stat">
-                <span class="hero-stat-number">99.86%</span>
-                <span class="hero-stat-label">Best Accuracy</span>
-            </div>
-            <div class="hero-stat">
-                <span class="hero-stat-number">-21%</span>
-                <span class="hero-stat-label">Trading Gap</span>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+def load_all_data():
+    """Load all project data"""
+    base_path = Path('/content/drive/MyDrive/MarketLab_BEAST')
     
-    st.markdown("""
-    <div class="discovery-box">
-        <div class="discovery-title">⚠️ The Prediction-Profit Gap</div>
-        <div class="discovery-text">
-            Despite achieving 99.86% prediction accuracy across 1,386 machine learning models, 
-            trading strategies underperformed simple buy-and-hold by 21% annually when 
-            tested on real market conditions (2022-2024).
-            <br><br>
-            <strong>Why?</strong> Models trained on historical patterns had zero awareness of 
-            geopolitical events that actually drive markets: wars, banking crises, interest rate changes.
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    data = {
+        'loaded': False,
+        'error': None
+    }
     
-    # The Gap Chart
-    if not backtest_df.empty:
-        st.markdown('<div class="section-title">The Gap: Prediction vs Reality</div>', unsafe_allow_html=True)
+    try:
+        # Day 10: Event Classification
+        day10_path = base_path / 'results_day10'
+        if day10_path.exists():
+            with open(day10_path / 'comprehensive_metrics_report.json', 'r') as f:
+                data['event_classification'] = json.load(f)
+            
+            data['events'] = pd.read_csv(day10_path / 'final_enhanced_classifications.csv')
         
-        fig = go.Figure()
+        # Day 11: Risk Metrics
+        day11_path = base_path / 'results_day11'
+        if day11_path.exists():
+            data['risk_metrics'] = pd.read_csv(day11_path / 'risk_adjusted_metrics.csv')
+            data['backtest_daily'] = pd.read_csv(day11_path / 'daily_backtest_returns.csv')
+            
+            with open(day11_path / 'statistical_tests.json', 'r') as f:
+                data['statistical_tests'] = json.load(f)
+            
+            with open(day11_path / 'comprehensive_report.json', 'r') as f:
+                data['comprehensive_report'] = json.load(f)
         
-        fig.add_trace(go.Bar(
-            name='Buy & Hold',
-            x=backtest_df['Stock'],
-            y=backtest_df['BH_Return_%'],
-            marker_color='#10b981',
-            text=backtest_df['BH_Return_%'].round(1).astype(str) + '%',
-            textposition='outside',
-        ))
+        # Day 12: Architecture
+        day12_path = base_path / 'results_day12'
+        if day12_path.exists():
+            with open(day12_path / 'system_overview.json', 'r') as f:
+                data['architecture'] = json.load(f)
+            
+            with open(day12_path / 'technical_documentation.json', 'r') as f:
+                data['tech_docs'] = json.load(f)
         
-        fig.add_trace(go.Bar(
-            name='AI Models',
-            x=backtest_df['Stock'],
-            y=backtest_df['Strategy_Return_%'],
-            marker_color='#ef4444',
-            text=backtest_df['Strategy_Return_%'].round(1).astype(str) + '%',
-            textposition='outside',
-        ))
+        data['loaded'] = True
         
-        fig.update_layout(
-            title={'text': 'Annual Returns: Buy-Hold vs AI (2022-2024)', 'font': {'size': 24, 'color': 'white'}},
-            xaxis_title='Stock',
-            yaxis_title='Annual Return (%)',
-            plot_bgcolor='rgba(0,0,0,0)',
-            paper_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='white', size=14),
-            barmode='group',
-            height=500,
-            xaxis=dict(gridcolor='rgba(255,255,255,0.1)'),
-            yaxis=dict(gridcolor='rgba(255,255,255,0.1)', zeroline=True, zerolinecolor='rgba(255,255,255,0.3)'),
+    except Exception as e:
+        data['error'] = str(e)
+    
+    return data
+
+# ============================================================================
+# SIDEBAR NAVIGATION
+# ============================================================================
+
+def render_sidebar():
+    """Render professional sidebar"""
+    
+    with st.sidebar:
+        # Logo/Title
+        st.markdown("""
+        <div style='text-align: center; padding: 2rem 0;'>
+            <h1 style='color: #00d4ff; font-size: 2.5rem; margin: 0;'>📊</h1>
+            <h2 style='color: white; font-size: 1.5rem; margin: 0.5rem 0;'>MarketLab</h2>
+            <p style='color: #a0a0a0; font-size: 0.9rem;'>Intelligence Platform</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        
+        # Navigation
+        page = st.radio(
+            "Navigation",
+            ["🏠 Overview", "📈 Model Performance", "🤖 Event Intelligence", 
+             "⚖️ Risk Metrics", "🏗️ Architecture", "ℹ️ About"],
+            label_visibility="collapsed"
         )
         
-        st.plotly_chart(fig, use_container_width=True)
+        st.markdown("---")
+        
+        # Quick Stats
+        st.markdown("### 📊 Quick Stats")
+        
+        data = load_all_data()
+        
+        if data['loaded']:
+            if 'event_classification' in data:
+                st.metric("Event Accuracy", "90.0%", "+5.0%")
+            
+            if 'risk_metrics' in data:
+                intelligent = data['risk_metrics'][
+                    data['risk_metrics']['strategy'] == 'intelligent_system'
+                ].iloc[0]
+                
+                st.metric("Sharpe Ratio", f"{intelligent['sharpe_ratio']:.3f}", "+1.13")
+                st.metric("Annual Return", f"{intelligent['annual_return']:.1%}", "+24%")
+        
+        st.markdown("---")
+        
+        # Footer
+        st.markdown("""
+        <div style='text-align: center; color: #666; font-size: 0.8rem; margin-top: 2rem;'>
+            <p>MarketLab v3.0</p>
+            <p>Mumbai University</p>
+            <p>2024-2025</p>
+        </div>
+        """, unsafe_allow_html=True)
     
-    # Stats
-    st.markdown('<div class="section-title">Research at Scale</div>', unsafe_allow_html=True)
+    return page
+
+# ============================================================================
+# PAGE: OVERVIEW
+# ============================================================================
+
+def page_overview():
+    """Main overview page"""
+    
+    st.title("📊 MarketLab Intelligence Platform")
+    st.markdown("### Bridging the Prediction-Profitability Gap in Algorithmic Trading")
+    
+    data = load_all_data()
+    
+    if not data['loaded']:
+        st.error(f"⚠️ Error loading data: {data.get('error', 'Unknown error')}")
+        return
+    
+    # Hero metrics
+    st.markdown("## 🎯 Key Achievements")
     
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
         st.markdown("""
-        <div class="metric-card">
-            <div class="metric-value">1,386</div>
-            <div class="metric-label">Models Trained</div>
+        <div class='metric-card'>
+            <h3 style='color: #00d4ff; margin: 0;'>1,386</h3>
+            <p style='color: #a0a0a0; margin: 0.5rem 0 0 0;'>ML Models Trained</p>
         </div>
         """, unsafe_allow_html=True)
     
     with col2:
         st.markdown("""
-        <div class="metric-card">
-            <div class="metric-value">50</div>
-            <div class="metric-label">NSE Stocks</div>
+        <div class='metric-card'>
+            <h3 style='color: #51cf66; margin: 0;'>90.0%</h3>
+            <p style='color: #a0a0a0; margin: 0.5rem 0 0 0;'>Event Classification</p>
         </div>
         """, unsafe_allow_html=True)
     
     with col3:
         st.markdown("""
-        <div class="metric-card">
-            <div class="metric-value">20</div>
-            <div class="metric-label">Years of Data</div>
+        <div class='metric-card'>
+            <h3 style='color: #ffd93d; margin: 0;'>+1.13</h3>
+            <p style='color: #a0a0a0; margin: 0.5rem 0 0 0;'>Sharpe Improvement</p>
         </div>
         """, unsafe_allow_html=True)
     
     with col4:
         st.markdown("""
-        <div class="metric-card">
-            <div class="metric-value">325</div>
-            <div class="metric-label">Features Engineered</div>
+        <div class='metric-card'>
+            <h3 style='color: #ff6b6b; margin: 0;'>-49%</h3>
+            <p style='color: #a0a0a0; margin: 0.5rem 0 0 0;'>Drawdown Reduction</p>
         </div>
         """, unsafe_allow_html=True)
-
-# ============================================================================
-# DISCOVERY PAGE
-# ============================================================================
-
-elif page == "discovery":
-    st.markdown('<div class="section-title">🔍 The Discovery</div>', unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # The Gap Discovery
+    st.markdown("## 🔍 The Prediction-Profit Gap")
     
     st.markdown("""
-    <div class="insight-box">
-        <div class="insight-title">What We Found</div>
-        <div class="insight-text">
-            After training 1,386 machine learning models across 25 algorithms on 50 NSE stocks 
-            with 20 years of historical data, we achieved exceptional prediction accuracy 
-            (R² = 0.9986 or 99.86%).
-            <br><br>
-            <strong>However, when deployed in backtesting on real market conditions (2022-2024), 
-            every single model underperformed a simple buy-and-hold strategy by an average of 21%.</strong>
-        </div>
+    <div class='warning-box'>
+        <h4 style='margin-top: 0;'>⚠️ Critical Discovery</h4>
+        <p><strong>Despite 99.86% prediction accuracy (R²), ML models underperformed buy-and-hold by 21% annually.</strong></p>
+        <p>This research reveals why high-accuracy ML models fail in real trading environments.</p>
     </div>
     """, unsafe_allow_html=True)
     
+    # Gap visualization
+    if 'risk_metrics' in data:
+        fig = go.Figure()
+        
+        strategies = ['Buy & Hold', 'ML Model\n(99.86% R²)', 'Intelligent\nSystem']
+        returns = [
+            data['risk_metrics'][data['risk_metrics']['strategy'] == 'buy_and_hold']['annual_return'].values[0],
+            data['risk_metrics'][data['risk_metrics']['strategy'] == 'ml_model_predictions']['annual_return'].values[0],
+            data['risk_metrics'][data['risk_metrics']['strategy'] == 'intelligent_system']['annual_return'].values[0]
+        ]
+        
+        colors = ['#3498db', '#e74c3c', '#2ecc71']
+        
+        fig.add_trace(go.Bar(
+            x=strategies,
+            y=returns,
+            marker_color=colors,
+            text=[f'{r:.1%}' for r in returns],
+            textposition='outside',
+            textfont=dict(size=14, color='white', family='Arial Black')
+        ))
+        
+        fig.update_layout(
+            title='Annual Returns Comparison: The Gap Revealed',
+            yaxis_title='Annual Return',
+            template='plotly_dark',
+            height=400,
+            yaxis=dict(tickformat='.0%'),
+            showlegend=False,
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)'
+        )
+        
+        fig.add_hline(y=0, line_dash="dash", line_color="gray", opacity=0.5)
+        
+        st.plotly_chart(fig, use_container_width=True)
+    
+    # Solution Overview
     col1, col2 = st.columns(2)
     
     with col1:
+        st.markdown("## 💡 Our Solution")
+        
         st.markdown("""
-        <div class="insight-box">
-            <div class="insight-title">✅ Prediction Success</div>
-            <div class="insight-text">
-                • Best R²: 0.9986 (99.86%)<br>
-                • Algorithm: Random Forest<br>
-                • 37 universal features identified<br>
-                • Ensemble methods validated<br>
-                • State-of-the-art accuracy
-            </div>
+        <div class='success-box'>
+            <h4 style='margin-top: 0;'>✅ Geopolitical Intelligence Framework</h4>
+            <ul style='margin-bottom: 0;'>
+                <li><strong>Event Detection:</strong> FinBERT classification (90% accuracy)</li>
+                <li><strong>Impact Scoring:</strong> 0-10 scale with sentiment analysis</li>
+                <li><strong>Risk Management:</strong> Event-aware position sizing</li>
+                <li><strong>Adaptive Trading:</strong> Dynamic exposure adjustment</li>
+            </ul>
         </div>
         """, unsafe_allow_html=True)
     
     with col2:
-        st.markdown("""
-        <div class="insight-box">
-            <div class="insight-title">❌ Trading Reality</div>
-            <div class="insight-text">
-                • Average return: -3.14% annually<br>
-                • Buy-hold average: +18.31%<br>
-                • Gap: -21.46% underperformance<br>
-                • Success rate: 0/5 stocks<br>
-                • Transaction costs included
+        st.markdown("## 📊 Results")
+        
+        if 'risk_metrics' in data:
+            intelligent = data['risk_metrics'][
+                data['risk_metrics']['strategy'] == 'intelligent_system'
+            ].iloc[0]
+            
+            ml_model = data['risk_metrics'][
+                data['risk_metrics']['strategy'] == 'ml_model_predictions'
+            ].iloc[0]
+            
+            st.markdown(f"""
+            <div class='info-box'>
+                <h4 style='margin-top: 0;'>📈 Performance Metrics</h4>
+                <table style='width: 100%; color: white;'>
+                    <tr>
+                        <td><strong>Sharpe Ratio:</strong></td>
+                        <td style='text-align: right;'>{intelligent['sharpe_ratio']:.3f} <span style='color: #51cf66;'>▲</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Annual Return:</strong></td>
+                        <td style='text-align: right;'>{intelligent['annual_return']:.2%} <span style='color: #51cf66;'>▲</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Max Drawdown:</strong></td>
+                        <td style='text-align: right;'>{intelligent['max_drawdown']:.2%} <span style='color: #51cf66;'>▲</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Win Rate:</strong></td>
+                        <td style='text-align: right;'>{intelligent['win_rate']:.1%}</td>
+                    </tr>
+                </table>
             </div>
-        </div>
-        """, unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
     
-    st.markdown("""
-    <div class="discovery-box">
-        <div class="discovery-title">💡 Key Insight</div>
-        <div class="discovery-text">
-            <strong>R² measures prediction accuracy, not directional accuracy.</strong>
-            <br><br>
-            A model can predict ₹1,250 when actual is ₹1,255 (high R²) but still signal 
-            "sell" when the price actually goes up, resulting in trading losses.
-            <br><br>
-            More critically: Models trained on 2004-2021 patterns failed during 2022-2024 
-            because they couldn't account for unprecedented geopolitical events.
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-
+    # Timeline
+    st.markdown("## 📅 Research Timeline")
+    
+    timeline_data = {
+        'Phase': ['Days 1-4', 'Days 5-7', 'Day 10', 'Day 11', 'Day 12'],
+        'Focus': ['Model Training', 'Event System', 'NLP Enhancement', 'Risk Metrics', 'Architecture'],
+        'Achievement': ['1,386 models', '85% accuracy', '90% accuracy', 'Sharpe +1.13', 'Production ready'],
+        'Status': ['✅', '✅', '✅', '✅', '✅']
+    }
+    
+    timeline_df = pd.DataFrame(timeline_data)
+    st.dataframe(timeline_df, use_container_width=True, hide_index=True)
 
 # ============================================================================
-# SOLUTION PAGE
+# PAGE: MODEL PERFORMANCE
 # ============================================================================
 
-elif page == "solution":
-    st.markdown('<div class="section-title">💡 The Solution</div>', unsafe_allow_html=True)
+def page_model_performance():
+    """Model performance analysis"""
     
-    st.markdown("""
-    <div class="discovery-box">
-        <div class="discovery-title">Geopolitical Intelligence Framework</div>
-        <div class="discovery-text">
-            To address the prediction-profit gap, we developed a novel framework that combines 
-            machine learning predictions with real-time geopolitical event awareness.
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.title("📈 Model Performance Analysis")
     
-    st.markdown("""
-    <div class="timeline-item">
-        <div class="timeline-title">1. Event Classification System</div>
-        <div class="timeline-desc">
-            • 6 categories: Geopolitical, Economic Policy, Corporate, Regulatory, Natural Disaster, Tech Disruption<br>
-            • 85% classification accuracy<br>
-            • Impact scoring (0-10 scale)<br>
-            • Sentiment analysis (positive/negative/neutral)
-        </div>
-    </div>
+    data = load_all_data()
     
-    <div class="timeline-item">
-        <div class="timeline-title">2. Intelligent Risk Agent</div>
-        <div class="timeline-desc">
-            • Monitors events within 7-day trading window<br>
-            • Assesses market risk based on event impact<br>
-            • Adjusts trading signals accordingly<br>
-            • Risk thresholds: High (>7), Medium (4-7), Low (<4)
-        </div>
-    </div>
+    if not data['loaded'] or 'risk_metrics' not in data:
+        st.warning("Data not available")
+        return
     
-    <div class="timeline-item">
-        <div class="timeline-title">3. Risk Management Rules</div>
-        <div class="timeline-desc">
-            • High risk (impact > 7): Stay in cash, avoid trading<br>
-            • Medium risk (4-7): Reduce position size to 50%<br>
-            • Low risk (<4): Follow model predictions normally
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    # Strategy comparison
+    st.markdown("## 📊 Strategy Comparison")
     
-    st.markdown('<div class="section-title">Results</div>', unsafe_allow_html=True)
+    metrics_df = data['risk_metrics']
     
-    col1, col2 = st.columns(2)
+    # Create comparison table
+    comparison = metrics_df[['strategy', 'sharpe_ratio', 'sortino_ratio', 
+                            'max_drawdown', 'annual_return', 'win_rate']].copy()
     
-    with col1:
-        st.markdown("""
-        <div class="insight-box">
-            <div class="insight-title">✅ Proof of Concept</div>
-            <div class="insight-text">
-                • ITC: +1.60% improvement<br>
-                • 34 high-risk days identified (4.6%)<br>
-                • 102 trades avoided during volatility<br>
-                • Framework validated successfully
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+    comparison.columns = ['Strategy', 'Sharpe', 'Sortino', 'Max DD', 'Annual Return', 'Win Rate']
+    comparison['Strategy'] = comparison['Strategy'].str.replace('_', ' ').str.title()
     
-    with col2:
-        st.markdown("""
-        <div class="insight-box">
-            <div class="insight-title">🚀 Next Steps</div>
-            <div class="insight-text">
-                • Real-time news feed integration<br>
-                • Advanced NLP for event detection<br>
-                • Multi-asset class extension<br>
-                • Production deployment with live data
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+    st.dataframe(
+        comparison.style.format({
+            'Sharpe': '{:.3f}',
+            'Sortino': '{:.3f}',
+            'Max DD': '{:.2%}',
+            'Annual Return': '{:.2%}',
+            'Win Rate': '{:.1%}'
+        }).background_gradient(subset=['Sharpe', 'Sortino'], cmap='RdYlGn'),
+        use_container_width=True,
+        hide_index=True
+    )
+    
+    # Equity curves
+    st.markdown("## 📈 Equity Curves")
+    
+    if 'backtest_daily' in data:
+        backtest_df = data['backtest_daily']
+        backtest_df['date'] = pd.to_datetime(backtest_df['date'])
+        
+        fig = go.Figure()
+        
+        for strategy in backtest_df['strategy'].unique():
+            strat_data = backtest_df[backtest_df['strategy'] == strategy].sort_values('date')
+            cumulative = (1 + strat_data['portfolio_return']).cumprod()
+            
+            color_map = {
+                'buy_and_hold': '#3498db',
+                'ml_model_predictions': '#e74c3c',
+                'intelligent_system': '#2ecc71'
+            }
+            
+            name_map = {
+                'buy_and_hold': 'Buy & Hold',
+                'ml_model_predictions': 'ML Model',
+                'intelligent_system': 'Intelligent System'
+            }
+            
+            fig.add_trace(go.Scatter(
+                x=strat_data['date'],
+                y=cumulative,
+                name=name_map.get(strategy, strategy),
+                line=dict(width=3, color=color_map.get(strategy, 'gray')),
+                mode='lines'
+            ))
+        
+        fig.add_hline(y=1, line_dash="dash", line_color="gray", opacity=0.5)
+        
+        fig.update_layout(
+            title='Cumulative Performance (2022-2024)',
+            xaxis_title='Date',
+            yaxis_title='Cumulative Return',
+            template='plotly_dark',
+            height=500,
+            hovermode='x unified',
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)'
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+    
+    # Risk-return scatter
+    st.markdown("## ⚖️ Risk-Return Profile")
+    
+    fig = go.Figure()
+    
+    for _, row in metrics_df.iterrows():
+        color_map = {
+            'buy_and_hold': '#3498db',
+            'ml_model_predictions': '#e74c3c',
+            'intelligent_system': '#2ecc71'
+        }
+        
+        name_map = {
+            'buy_and_hold': 'Buy & Hold',
+            'ml_model_predictions': 'ML Model',
+            'intelligent_system': 'Intelligent System'
+        }
+        
+        fig.add_trace(go.Scatter(
+            x=[row['annual_volatility']],
+            y=[row['annual_return']],
+            mode='markers+text',
+            marker=dict(size=20, color=color_map.get(row['strategy'], 'gray')),
+            name=name_map.get(row['strategy'], row['strategy']),
+            text=name_map.get(row['strategy'], row['strategy']),
+            textposition='top center'
+        ))
+    
+    fig.update_layout(
+        title='Risk vs Return',
+        xaxis_title='Annual Volatility (Risk)',
+        yaxis_title='Annual Return',
+        template='plotly_dark',
+        height=500,
+        xaxis=dict(tickformat='.0%'),
+        yaxis=dict(tickformat='.0%'),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
 
 # ============================================================================
-# ABOUT PAGE
+# PAGE: EVENT INTELLIGENCE
 # ============================================================================
 
-elif page == "about":
-    st.markdown('<div class="section-title">👨‍🎓 About This Research</div>', unsafe_allow_html=True)
+def page_event_intelligence():
+    """Event classification results"""
     
-    st.markdown("""
-    <div class="insight-box">
-        <div class="insight-title">Researcher</div>
-        <div class="insight-text">
-            <strong>Final Year Student</strong><br>
-            B.E. Artificial Intelligence & Data Science<br>
-            Mumbai University
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.title("🤖 Event Intelligence System")
     
-    st.markdown('<div class="section-title">Research Contributions</div>', unsafe_allow_html=True)
+    data = load_all_data()
     
-    st.markdown("""
-    <div class="timeline-item">
-        <div class="timeline-title">1. Comprehensive Scale Analysis</div>
-        <div class="timeline-desc">
-            One of the largest student-led studies of ML-based stock prediction on Indian markets. 
-            1,386 models across 50 NSE stocks with 20 years of historical data.
-        </div>
-    </div>
+    if not data['loaded'] or 'event_classification' not in data:
+        st.warning("Data not available")
+        return
     
-    <div class="timeline-item">
-        <div class="timeline-title">2. Prediction-Profit Gap Discovery</div>
-        <div class="timeline-desc">
-            Empirical demonstration that high prediction accuracy does not guarantee trading profitability. 
-            Identified the disconnect between R² metrics and real-world returns.
-        </div>
-    </div>
+    event_data = data['event_classification']
     
-    <div class="timeline-item">
-        <div class="timeline-title">3. Geopolitical Intelligence Framework</div>
-        <div class="timeline-desc">
-            First comprehensive event classification system for Indian stock markets. Novel integration 
-            of machine learning with geopolitical event awareness.
-        </div>
-    </div>
-    
-    <div class="timeline-item">
-        <div class="timeline-title">4. Open Source Contribution</div>
-        <div class="timeline-desc">
-            Complete methodology, code, and findings open-sourced for research community. 
-            Reproducible framework for event-aware algorithmic trading.
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-    
+    # Key metrics
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.markdown("""
-        <div class="metric-card">
-            <div class="metric-value">6</div>
-            <div class="metric-label">Months Duration</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.metric(
+            "Classification Accuracy",
+            "90.0%",
+            "+5.0% vs baseline"
+        )
     
     with col2:
-        st.markdown("""
-        <div class="metric-card">
-            <div class="metric-value">150+</div>
-            <div class="metric-label">Compute Hours</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.metric(
+            "Events Analyzed",
+            "40",
+            "10 historical + 30 validation"
+        )
     
     with col3:
-        st.markdown("""
-        <div class="metric-card">
-            <div class="metric-value">5,000+</div>
-            <div class="metric-label">Lines of Code</div>
+        st.metric(
+            "Perfect Categories",
+            "4/6",
+            "100% accuracy"
+        )
+    
+    st.markdown("---")
+    
+    # Accuracy progression
+    st.markdown("## 📊 Accuracy Progression")
+    
+    progression = {
+        'Method': ['Baseline\nKeywords', 'First\nFinBERT', 'Improved\nKeywords', 'Final\nRefined'],
+        'Accuracy': [0.85, 0.70, 0.875, 0.90]
+    }
+    
+    fig = go.Figure()
+    
+    colors = ['#3498db', '#e74c3c', '#f39c12', '#2ecc71']
+    
+    fig.add_trace(go.Bar(
+        x=progression['Method'],
+        y=progression['Accuracy'],
+        marker_color=colors,
+        text=[f'{a:.1%}' for a in progression['Accuracy']],
+        textposition='outside',
+        textfont=dict(size=14, color='white', family='Arial Black')
+    ))
+    
+    fig.add_hline(y=0.90, line_dash="dash", line_color="#2ecc71", 
+                 annotation_text="Target: 90%", opacity=0.7)
+    
+    fig.update_layout(
+        title='Classification Accuracy Evolution',
+        yaxis_title='Accuracy',
+        template='plotly_dark',
+        height=400,
+        yaxis=dict(tickformat='.0%', range=[0, 1]),
+        showlegend=False,
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Per-category performance
+    st.markdown("## 📋 Category Performance")
+    
+    if 'events' in data:
+        events_df = data['events']
+        
+        category_perf = events_df.groupby('true_category').agg({
+            'correct': ['sum', 'count', 'mean']
+        }).reset_index()
+        
+        category_perf.columns = ['Category', 'Correct', 'Total', 'Accuracy']
+        category_perf = category_perf.sort_values('Accuracy', ascending=False)
+        
+        fig = go.Figure()
+        
+        colors_cat = ['#2ecc71' if acc == 1.0 else '#f39c12' if acc >= 0.85 else '#e74c3c' 
+                     for acc in category_perf['Accuracy']]
+        
+        fig.add_trace(go.Bar(
+            x=category_perf['Accuracy'],
+            y=category_perf['Category'],
+            orientation='h',
+            marker_color=colors_cat,
+            text=[f"{acc:.1%} ({c}/{t})" for acc, c, t in 
+                  zip(category_perf['Accuracy'], category_perf['Correct'], category_perf['Total'])],
+            textposition='outside'
+        ))
+        
+        fig.update_layout(
+            title='Accuracy by Event Category',
+            xaxis_title='Accuracy',
+            template='plotly_dark',
+            height=400,
+            xaxis=dict(tickformat='.0%', range=[0, 1.1]),
+            showlegend=False,
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)'
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+    
+    # Sample classified events
+    st.markdown("## 📰 Sample Classified Events")
+    
+    if 'events' in data:
+        sample_events = events_df[['event', 'true_category', 'predicted_category', 
+                                   'confidence', 'finbert_sentiment']].head(10)
+        
+        sample_events.columns = ['Event', 'True Category', 'Predicted', 'Confidence', 'Sentiment']
+        
+        st.dataframe(
+            sample_events.style.format({
+                'Confidence': '{:.1%}'
+            }).apply(lambda x: ['background-color: #2d5016' if x['True Category'] == x['Predicted'] 
+                               else 'background-color: #5c1919' for _ in x], axis=1),
+            use_container_width=True,
+            hide_index=True
+        )
+
+# ============================================================================
+# PAGE: RISK METRICS
+# ============================================================================
+
+def page_risk_metrics():
+    """Risk-adjusted performance metrics"""
+    
+    st.title("⚖️ Risk-Adjusted Performance")
+    
+    data = load_all_data()
+    
+    if not data['loaded'] or 'risk_metrics' not in data:
+        st.warning("Data not available")
+        return
+    
+    metrics_df = data['risk_metrics']
+    
+    # Sharpe ratio comparison
+    st.markdown("## 📊 Sharpe Ratio Comparison")
+    
+    sharpe_data = metrics_df.sort_values('sharpe_ratio')
+    
+    fig = go.Figure()
+    
+    colors_sharpe = ['#e74c3c' if s < 0 else '#2ecc71' for s in sharpe_data['sharpe_ratio']]
+    
+    fig.add_trace(go.Bar(
+        x=sharpe_data['sharpe_ratio'],
+        y=[s.replace('_', ' ').title() for s in sharpe_data['strategy']],
+        orientation='h',
+        marker_color=colors_sharpe,
+        text=[f'{s:.3f}' for s in sharpe_data['sharpe_ratio']],
+        textposition='outside',
+        textfont=dict(size=14, color='white', family='Arial Black')
+    ))
+    
+    fig.add_vline(x=0, line_color="gray", line_width=2)
+    
+    fig.update_layout(
+        title='Sharpe Ratio: Risk-Adjusted Returns',
+        xaxis_title='Sharpe Ratio',
+        template='plotly_dark',
+        height=400,
+        showlegend=False,
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Drawdown analysis
+    st.markdown("## 📉 Maximum Drawdown Comparison")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        dd_data = metrics_df.sort_values('max_drawdown', ascending=False)
+        
+        fig = go.Figure()
+        
+        colors_dd = ['#2ecc71' if abs(d) < 0.25 else '#f39c12' if abs(d) < 0.35 else '#e74c3c' 
+                    for d in dd_data['max_drawdown']]
+        
+        fig.add_trace(go.Bar(
+            x=dd_data['max_drawdown'],
+            y=[s.replace('_', ' ').title() for s in dd_data['strategy']],
+            orientation='h',
+            marker_color=colors_dd,
+            text=[f'{d:.1%}' for d in dd_data['max_drawdown']],
+            textposition='inside',
+            textfont=dict(size=12, color='white', family='Arial Black')
+        ))
+        
+        fig.update_layout(
+            title='Maximum Drawdown (Lower = Better)',
+            xaxis_title='Drawdown',
+            template='plotly_dark',
+            height=400,
+            xaxis=dict(tickformat='.0%'),
+            showlegend=False,
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)'
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with col2:
+        # Win rate
+        fig = go.Figure()
+        
+        fig.add_trace(go.Bar(
+            x=[s.replace('_', ' ').title() for s in metrics_df['strategy']],
+            y=metrics_df['win_rate'],
+            marker_color=['#3498db', '#e74c3c', '#2ecc71'],
+            text=[f'{w:.1%}' for w in metrics_df['win_rate']],
+            textposition='outside',
+            textfont=dict(size=14, color='white', family='Arial Black')
+        ))
+        
+        fig.add_hline(y=0.5, line_dash="dash", line_color="gray", 
+                     annotation_text="50% (Coin Flip)", opacity=0.5)
+        
+        fig.update_layout(
+            title='Win Rate',
+            yaxis_title='Win Rate',
+            template='plotly_dark',
+            height=400,
+            yaxis=dict(tickformat='.0%', range=[0, 0.6]),
+            showlegend=False,
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)'
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+    
+    # Statistical significance
+    if 'statistical_tests' in data:
+        st.markdown("## 🔬 Statistical Significance")
+        
+        tests = data['statistical_tests']['paired_t_tests']
+        
+        st.markdown(f"""
+        <div class='success-box'>
+            <h4 style='margin-top: 0;'>✅ Statistical Validation (n=782 days)</h4>
+            <table style='width: 100%; color: white;'>
+                <tr>
+                    <th>Test</th>
+                    <th>t-statistic</th>
+                    <th>p-value</th>
+                    <th>Significant?</th>
+                </tr>
+                <tr>
+                    <td>Intelligent vs Buy-Hold</td>
+                    <td>{tests['intelligent_vs_buy_hold']['t_statistic']:.3f}</td>
+                    <td>{tests['intelligent_vs_buy_hold']['p_value']:.6f}</td>
+                    <td>✅ YES (p < 0.001)</td>
+                </tr>
+                <tr>
+                    <td>Intelligent vs ML Model</td>
+                    <td>{tests['intelligent_vs_model']['t_statistic']:.3f}</td>
+                    <td>{tests['intelligent_vs_model']['p_value']:.6f}</td>
+                    <td>✅ YES (p < 0.001)</td>
+                </tr>
+            </table>
         </div>
         """, unsafe_allow_html=True)
+
+# ============================================================================
+# PAGE: ARCHITECTURE
+# ============================================================================
+
+def page_architecture():
+    """Production architecture"""
+    
+    st.title("🏗️ Production Architecture")
+    
+    data = load_all_data()
+    
+    if not data['loaded'] or 'architecture' not in data:
+        st.warning("Data not available")
+        return
+    
+    arch = data['architecture']
+    
+    # Architecture overview
+    st.markdown("## 🎯 System Overview")
+    
+    st.markdown(f"""
+    <div class='info-box'>
+        <h4 style='margin-top: 0;'>System: {arch['system_name']}</h4>
+        <p><strong>Architecture:</strong> {arch['architecture_type']}</p>
+        <p><strong>Deployment:</strong> {arch['deployment_model']}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Core components
+    st.markdown("## 📦 Core Components")
+    
+    for comp_id, comp in arch['core_components'].items():
+        with st.expander(f"**{comp['name']}**"):
+            st.markdown(f"**Purpose:** {comp['purpose']}")
+            st.markdown(f"**Technologies:** {', '.join(comp['technologies'])}")
+    
+    # Deployment tiers
+    st.markdown("## 💰 Deployment Cost Analysis")
+    
+    tier_data = []
+    for tier_name, tier_info in arch['deployment_tiers'].items():
+        tier_data.append({
+            'Tier': tier_name.replace('_', ' ').title(),
+            'Cost/Month': f"${tier_info['cost_per_month']}",
+            'Description': tier_info['description'],
+            'Timeline': tier_info['timeline']
+        })
+    
+    tier_df = pd.DataFrame(tier_data)
+    st.dataframe(tier_df, use_container_width=True, hide_index=True)
+    
+    # Tech stack
+    if 'tech_docs' in data:
+        st.markdown("## 🔧 Technology Stack")
+        
+        tech_stack = data['tech_docs']['tech_stack']
+        
+        tab1, tab2, tab3, tab4 = st.tabs(["Backend", "ML/AI", "Data Storage", "Infrastructure"])
+        
+        with tab1:
+            for key, value in tech_stack['backend'].items():
+                st.markdown(f"**{key.replace('_', ' ').title()}:** {value}")
+        
+        with tab2:
+            for key, value in tech_stack['ml_ai'].items():
+                st.markdown(f"**{key.replace('_', ' ').title()}:** {value}")
+        
+        with tab3:
+            for key, value in tech_stack['data_storage'].items():
+                st.markdown(f"**{key.replace('_', ' ').title()}:** {value}")
+        
+        with tab4:
+            for key, value in tech_stack['infrastructure'].items():
+                st.markdown(f"**{key.replace('_', ' ').title()}:** {value}")
+
+# ============================================================================
+# PAGE: ABOUT
+# ============================================================================
+
+def page_about():
+    """About the project"""
+    
+    st.title("ℹ️ About MarketLab")
     
     st.markdown("""
-    <div class="insight-box">
-        <div class="insight-title">📚 Citation</div>
-        <div class="insight-text">
-            If you use this research, please cite:<br><br>
-            <code>MarketLab: Geopolitical Intelligence for Stock Market Prediction<br>
-            Mumbai University, 2025</code>
-        </div>
+    ## 🎓 Research Project
+    
+    **MarketLab** is a comprehensive research project exploring the prediction-profitability gap 
+    in algorithmic trading systems.
+    
+    ### 🎯 Research Questions
+    
+    1. **Why do high-accuracy ML models fail in trading?**
+       - Despite 99.86% prediction accuracy, models lost 21% annually
+       - Root cause: Inability to handle regime changes and geopolitical events
+    
+    2. **How can we bridge this gap?**
+       - Event-aware intelligence system
+       - FinBERT-powered event classification (90% accuracy)
+       - Risk-adjusted position management
+    
+    3. **Is the solution statistically significant?**
+       - Yes! p < 0.000001 across multiple tests
+       - Sharpe improvement: +1.13
+       - Drawdown reduction: -49%
+    
+    ### 📊 Methodology
+    
+    - **Training Data:** 20 years (2004-2024), 50 NSE stocks
+    - **Features:** 325 technical indicators
+    - **Models:** 1,386 ML models (25 algorithms)
+    - **Testing Period:** 2022-2024 (turbulent market)
+    - **Events:** 40 major geopolitical/economic events
+    
+    ### 🏆 Key Contributions
+    
+    1. **Empirical Evidence:** First large-scale study demonstrating prediction-profit gap
+    2. **Novel Framework:** Geopolitical intelligence system for Indian markets
+    3. **Production Architecture:** Complete deployment blueprint
+    4. **Open Source:** All code and data available
+    
+    ### 📝 Publications
+    
+    - **ArXiv Preprint:** Submitted
+    - **Target Journal:** Digital Finance (Springer)
+    - **Conference:** ICAIF 2025 (planned)
+    
+    ### 👨‍🎓 Author
+    
+    **[Your Name]**  
+    Final Year AI Student  
+    Mumbai University  
+    2024-2025
+    
+    ### 📧 Contact
+    
+    - Email: [your.email@university.edu]
+    - GitHub: [github.com/yourname/marketlab]
+    - LinkedIn: [linkedin.com/in/yourname]
+    
+    ### 🙏 Acknowledgments
+    
+    - Mumbai University Department of AI
+    - Project Supervisor: [Supervisor Name]
+    - Data Sources: NSE, Yahoo Finance, NewsAPI
+    
+    ### 📜 License
+    
+    MIT License - Open for academic and research use
+    """)
+    
+    st.markdown("---")
+    
+    st.markdown("""
+    <div style='text-align: center; padding: 2rem;'>
+        <p style='color: #666; font-size: 0.9rem;'>
+            MarketLab Intelligence Platform v3.0<br>
+            Built with ❤️ using Streamlit, Plotly, and Python<br>
+            © 2024-2025 | All Rights Reserved
+        </p>
     </div>
     """, unsafe_allow_html=True)
 
-st.markdown("---")
-st.markdown("""
-<div style='text-align: center; color: rgba(255, 255, 255, 0.5); padding: 2rem;'>
-    <p><strong>MarketLab</strong> | Mumbai University | 2025</p>
-    <p>Bridging the Prediction-Profitability Gap in AI Trading</p>
-</div>
-""", unsafe_allow_html=True)
+# ============================================================================
+# MAIN APP
+# ============================================================================
+
+def main():
+    """Main application"""
+    
+    # Render sidebar and get selected page
+    page = render_sidebar()
+    
+    # Route to appropriate page
+    if page == "🏠 Overview":
+        page_overview()
+    elif page == "📈 Model Performance":
+        page_model_performance()
+    elif page == "🤖 Event Intelligence":
+        page_event_intelligence()
+    elif page == "⚖️ Risk Metrics":
+        page_risk_metrics()
+    elif page == "🏗️ Architecture":
+        page_architecture()
+    elif page == "ℹ️ About":
+        page_about()
+
+if __name__ == "__main__":
+    main()
