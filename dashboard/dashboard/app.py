@@ -568,7 +568,7 @@ def page_research_journey():
     <div class="process-step">
         <div class="step-number">1</div>
         <h3 style="margin-top: 1rem; color: #667eea;">Discovery: Training 1,386 Models</h3>
-        <p><strong>Duration:</strong> Days 1-4 (4 weeks)</p>
+        
         <p><strong>Goal:</strong> Build comprehensive ML prediction system</p>
         <ul>
             <li>Collected 20 years of data (2004-2024) for 50 NSE stocks</li>
@@ -585,7 +585,7 @@ def page_research_journey():
     <div class="process-step">
         <div class="step-number">2</div>
         <h3 style="margin-top: 1rem; color: #667eea;">Shock: The Gap Emerges</h3>
-        <p><strong>Duration:</strong> Days 5-6</p>
+        
         <p><strong>Discovery:</strong> Backtesting revealed catastrophic failure</p>
         <ul>
             <li>Test period: 2022-2024 (out-of-sample)</li>
@@ -609,7 +609,7 @@ def page_research_journey():
     <div class="process-step">
         <div class="step-number">3</div>
         <h3 style="margin-top: 1rem; color: #667eea;">Hypothesis: Event-Aware Intelligence</h3>
-        <p><strong>Duration:</strong> Day 7</p>
+        
         <p><strong>Idea:</strong> What if we detect and respond to major events?</p>
         <ul>
             <li>Built event taxonomy (6 categories)</li>
@@ -626,7 +626,7 @@ def page_research_journey():
     <div class="process-step">
         <div class="step-number">4</div>
         <h3 style="margin-top: 1rem; color: #667eea;">Enhancement: FinBERT Integration</h3>
-        <p><strong>Duration:</strong> Day 10</p>
+        
         <p><strong>Goal:</strong> Upgrade event classification to 90%+</p>
         <ul>
             <li>Integrated FinBERT (financial sentiment model)</li>
@@ -649,7 +649,7 @@ def page_research_journey():
     <div class="process-step">
         <div class="step-number">5</div>
         <h3 style="margin-top: 1rem; color: #667eea;">Validation: Professional Risk Metrics</h3>
-        <p><strong>Duration:</strong> Day 11</p>
+        
         <p><strong>Goal:</strong> Prove statistical significance</p>
         <ul>
             <li>Generated realistic 3-year backtest (782 trading days)</li>
@@ -689,8 +689,7 @@ def page_research_journey():
     
     timeline_data = {
         'Phase': ['Discovery', 'Shock', 'Hypothesis', 'Enhancement', 'Validation', 'Production'],
-        'Days': ['1-4', '5-6', '7', '10', '11', '12'],
-        'Duration': ['4 weeks', '1 week', '3 days', '1 day', '1 day', '1 day'],
+        
         'Outcome': ['1,386 models', 'Gap found', '85% accuracy', '90% accuracy', 'p<0.001', 'Architecture']
     }
     
