@@ -534,7 +534,7 @@ def page_overview():
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
             font=dict(family='Inter', color='white')
-        ))
+        )
         
         st.plotly_chart(fig, use_container_width=True)
     
